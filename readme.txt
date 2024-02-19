@@ -1,3 +1,7 @@
+Forked from nQuake, along with changes from WinQuake to have 386 optimized code.
+
+
+
 == nQuake Readme ==
 
 TOC:

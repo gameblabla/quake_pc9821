@@ -66,7 +66,9 @@ extern float	d_sdivzstepu, d_tdivzstepu, d_zistepu;
 extern float	d_sdivzstepv, d_tdivzstepv, d_zistepv;
 extern float	d_sdivzorigin, d_tdivzorigin, d_ziorigin;
 
+#if !defined(id386)
 #define CALCG_FIXED 1
+#endif
 extern fixed_spans8_var_package_t s_spans8_var_package;
 
 typedef struct {

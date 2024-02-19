@@ -205,7 +205,7 @@ typedef struct mspriteframe_s
 	int		height;
 	void	*pcachespot;			// remove?
 	float	up, down, left, right;
-	byte	pixels[4];
+	byte	pixels[11]; //GBB, gameblabla from 4 to 11
 } mspriteframe_t;
 
 typedef struct

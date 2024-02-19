@@ -146,7 +146,7 @@ void R_EntityParticles (entity_t *ent)
 
 	if (!avelocities[0][0])
 	{
-		for (i=0 ; i<NUMVERTEXNORMALS*3 ; i++)
+		for (i=0 ; i<3 ; i++)
 			avelocities[0][i] = (rand()&255) * 0.01;
 	}
 
@@ -202,6 +202,7 @@ R_ClearParticles
 */
 void R_ClearParticles (void)
 {
+#if !NOPARTICLES
 	int		i;
 	
 	free_particles = &particles[0];
@@ -210,6 +211,7 @@ void R_ClearParticles (void)
 	for (i=0 ;i<r_numparticles ; i++)
 		particles[i].next = &particles[i+1];
 	particles[r_numparticles-1].next = NULL;
+#endif
 }
 
 
@@ -308,6 +310,7 @@ R_ParticleExplosion
 */
 void R_ParticleExplosion (vec3_t org)
 {
+#if !defined(NOPARTICLES)
 	int			i, j;
 	particle_t	*p;
 	
@@ -358,6 +361,7 @@ void R_ParticleExplosion (vec3_t org)
 			}
 		}
 	}
+#endif
 }
 
 /*
@@ -480,6 +484,7 @@ R_RunParticleEffect
 */
 void R_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count)
 {
+#if !defined(NOPARTICLES)
 	int			i, j;
 	particle_t	*p;
 	
@@ -563,6 +568,7 @@ void R_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count)
 #endif
 		}
 	}
+#endif
 }
 
 
@@ -636,6 +642,7 @@ R_TeleportSplash
 */
 void R_TeleportSplash (vec3_t org)
 {
+#if !NOPARTICLES
 	int			i, j, k;
 	particle_t	*p;
 	float		vel;
@@ -690,10 +697,12 @@ void R_TeleportSplash (vec3_t org)
 				}
 #endif
 			}
+#endif
 }
 
 void R_RocketTrail (vec3_t start, vec3_t end, int type)
 {
+#if !defined(NOPARTICLES)
 	vec3_t		vec;
 	float		len;
 	int			j;
@@ -860,6 +869,7 @@ void R_RocketTrail (vec3_t start, vec3_t end, int type)
 		
 		VectorAdd (start, vec, start);
 	}
+#endif
 }
 
 
@@ -872,6 +882,7 @@ extern	cvar_t	sv_gravity;
 
 void R_DrawParticles (void)
 {
+#if !defined(NOPARTICLES)
 	particle_t		*p, *kill;
 	float			grav;
 	int				i;
@@ -1116,6 +1127,8 @@ void R_DrawParticles (void)
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 #else
 	D_EndParticles ();
+#endif
+
 #endif
 }
 

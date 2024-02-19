@@ -27,9 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define LIGHT_MIN	5		// lowest light value we'll allow, to avoid the
 							//  need for inner-loop light clamping
 
-
+#if !defined(id386)
 #define ALIAS_FIXEDP 1
-
+#endif
 mtriangle_t		*ptriangles;
 affinetridesc_t	r_affinetridesc;
 

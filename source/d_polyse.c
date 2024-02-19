@@ -24,7 +24,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "r_local.h"
 #include "d_local.h"
 
+#if !(id386)  || defined(NSPIRE_OPTS)
 #define NSPIRE_POLYSET_DRAWSPANS 1
+#endif
 
 // TODO: put in span spilling to shrink list size
 // !!! if this is changed, it must be changed in d_polysa.s too !!!
@@ -537,7 +539,9 @@ D_PolysetCalcGradients
 ================
 */
 
+#if !(id386)
 #define NSPIRE_POLYSET_GRAD_FIXED 1
+#endif
 
 void D_PolysetCalcGradients (int skinwidth)
 {

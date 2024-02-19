@@ -762,6 +762,28 @@ void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip)
 	}
 }
 
+#else
+void test_float32_shift( float *f, int shift )
+{
+	int i_float;
+	int i_e;
+
+	i_float = *(int*)f;
+	i_e = ( i_float >> 23 ) & 0xff;
+	i_e += shift;
+	if( i_e > 0xfe )
+	{
+		i_e = 0xfe;
+	}
+	else if( i_e < 0x1 )
+	{
+		i_e = 0x1;
+	}
+	i_float = ( i_float & 0x807fffff ) | ( i_e << 23 );
+	*f = *( float * )&i_float;
+}
+
+
 #endif	// !id386
 
 
@@ -794,7 +816,9 @@ R_RenderFace
 ================
 */
 
+#if !(id386) || defined(NSPIRE_OPTS)
 #define NSPIRE_CHEAP_ZICACHE 1
+#endif
 
 #if NSPIRE_CHEAP_ZICACHE
 struct {
@@ -1019,12 +1043,14 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 		surface_p->d_ziorigin = p_normal[2] * distinv -
 				xcenter * surface_p->d_zistepu -
 				ycenter * surface_p->d_zistepv;
-
+#if NSPIRE_CHEAP_ZICACHE
 		s_r_render_face_cached_plane.ps_pplane = pplane;
 		s_r_render_face_cached_plane.f_d_zistepu = surface_p->d_zistepu;
 		s_r_render_face_cached_plane.f_d_zistepv = surface_p->d_zistepv;
 		s_r_render_face_cached_plane.f_d_ziorigin = surface_p->d_ziorigin;
 		s_r_render_face_cached_plane.i_valid_framecount = r_framecount;
+#endif
+		
 #if NSPIRE_CHEAP_ZICACHE
 	}
 #endif

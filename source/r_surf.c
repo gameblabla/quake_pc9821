@@ -21,8 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 #include "r_local.h"
-
+#if !(id386)  || defined(NSPIRE_OPTS)
 #define NSPIRE_CHEAP_SHOT_SURF 1
+#endif
 
 drawsurf_t	r_drawsurf;
 
@@ -73,7 +74,9 @@ unsigned		blocklights[18*18];
 R_AddDynamicLights
 ===============
 */
+#if !(id386)  || defined(NSPIRE_OPTS)
 #define NSPIRE_WHAT_IS_GOING_ON_IN_HERE 1
+#endif
 
 void R_AddDynamicLights (void)
 {
@@ -772,6 +775,193 @@ void R_DrawSurfaceBlock16 (void)
 }
 
 
+
+
+void R_DrawSurfaceBlock8_mip0_aligned_colormap (void)
+{
+	int				v, i, b, lightstep, lighttemp, light;
+	unsigned char	pix, *psource, *prowdest;
+	pixel_t *colormap = vid.colormap;
+	byte *light_ptr;
+	int local_lightleft, local_lightright, local_lightleftstep, local_lightrightstep, local_surfrowbytes, local_sourcetstep;
+
+	psource = pbasesource;
+	prowdest = prowdestbase;
+
+	for (v=0 ; v<r_numvblocks ; v++)
+	{
+		local_lightleft = r_lightptr[0] & 0xffff;
+		local_lightright = r_lightptr[1] & 0xffff;
+		r_lightptr += r_lightwidth;
+		local_lightleftstep = ( ( (int)r_lightptr[0] & 0xffff ) - local_lightleft) >> 4;
+		local_lightrightstep = ( ( (int)r_lightptr[1] & 0xffff ) - local_lightright) >> 4;
+		local_surfrowbytes = surfrowbytes;
+		local_sourcetstep = sourcetstep;
+
+		for (i=0 ; i<16 ; i++)
+		{
+			lighttemp = ( local_lightright - local_lightleft );
+			lightstep = lighttemp >> 4;
+			light = local_lightleft;
+			local_lightright += local_lightrightstep;
+			local_lightleft += local_lightleftstep;
+
+			light_ptr = ( colormap + light );
+
+			for (b=0; b < 16; b++)
+			{
+				pix = psource[b];
+				prowdest[b] = ((unsigned char *)((( size_t )light_ptr)&~0xff))[pix];
+				light_ptr += lightstep;
+			}
+			psource += local_sourcetstep;
+			prowdest += local_surfrowbytes;
+		}
+
+		if (psource >= r_sourcemax)
+			psource -= r_stepback;
+	}
+}
+
+void R_DrawSurfaceBlock8_mip1_aligned_colormap (void)
+{
+	int				v, i, b, lightstep, lighttemp, light;
+	unsigned char	pix, *psource, *prowdest;
+	pixel_t *colormap = vid.colormap;
+	byte *light_ptr;
+	int local_lightleft, local_lightright, local_lightleftstep, local_lightrightstep, local_surfrowbytes, local_sourcetstep;
+
+	psource = pbasesource;
+	prowdest = prowdestbase;
+
+	for (v=0 ; v<r_numvblocks ; v++)
+	{
+		local_lightleft = r_lightptr[0] & 0xffff;
+		local_lightright = r_lightptr[1] & 0xffff;
+		r_lightptr += r_lightwidth;
+		local_lightleftstep = ( ( (int)r_lightptr[0] & 0xffff ) - local_lightleft) >> 3;
+		local_lightrightstep = ( ( (int)r_lightptr[1] & 0xffff ) - local_lightright) >> 3;
+		local_surfrowbytes = surfrowbytes;
+		local_sourcetstep = sourcetstep;
+
+		for (i=0 ; i<8 ; i++)
+		{
+			lighttemp = ( local_lightright - local_lightleft );
+			lightstep = lighttemp >> 3;
+			light = local_lightleft;
+			local_lightright += local_lightrightstep;
+			local_lightleft += local_lightleftstep;
+
+			light_ptr = ( colormap + light );
+
+			for (b=0; b < 8; b++)
+			{
+				pix = psource[b];
+				prowdest[b] = ((unsigned char *)((( size_t )light_ptr)&~0xff))[pix];
+				light_ptr += lightstep;
+			}
+			psource += local_sourcetstep;
+			prowdest += local_surfrowbytes;
+		}
+
+		if (psource >= r_sourcemax)
+			psource -= r_stepback;
+	}
+}
+
+void R_DrawSurfaceBlock8_mip2_aligned_colormap (void)
+{
+	int				v, i, b, lightstep, lighttemp, light;
+	unsigned char	pix, *psource, *prowdest;
+	pixel_t *colormap = vid.colormap;
+	byte *light_ptr;
+	int local_lightleft, local_lightright, local_lightleftstep, local_lightrightstep, local_surfrowbytes, local_sourcetstep;
+
+	psource = pbasesource;
+	prowdest = prowdestbase;
+
+	for (v=0 ; v<r_numvblocks ; v++)
+	{
+		local_lightleft = r_lightptr[0] & 0xffff;
+		local_lightright = r_lightptr[1] & 0xffff;
+		r_lightptr += r_lightwidth;
+		local_lightleftstep = ( ( (int)r_lightptr[0] & 0xffff ) - local_lightleft) >> 2;
+		local_lightrightstep = ( ( (int)r_lightptr[1] & 0xffff ) - local_lightright) >> 2;
+		local_surfrowbytes = surfrowbytes;
+		local_sourcetstep = sourcetstep;
+
+		for (i=0 ; i<4 ; i++)
+		{
+			lighttemp = ( local_lightright - local_lightleft );
+			lightstep = lighttemp >> 2;
+			light = local_lightleft;
+			local_lightright += local_lightrightstep;
+			local_lightleft += local_lightleftstep;
+
+			light_ptr = ( colormap + light );
+
+			for (b=0; b < 4; b++)
+			{
+				pix = psource[b];
+				prowdest[b] = ((unsigned char *)((( size_t )light_ptr)&~0xff))[pix];
+				light_ptr += lightstep;
+			}
+			psource += local_sourcetstep;
+			prowdest += local_surfrowbytes;
+		}
+
+		if (psource >= r_sourcemax)
+			psource -= r_stepback;
+	}
+}
+
+void R_DrawSurfaceBlock8_mip3_aligned_colormap (void)
+{
+	int				v, i, b, lightstep, lighttemp, light;
+	unsigned char	pix, *psource, *prowdest;
+	pixel_t *colormap = vid.colormap;
+	byte *light_ptr;
+	int local_lightleft, local_lightright, local_lightleftstep, local_lightrightstep, local_surfrowbytes, local_sourcetstep;
+
+	psource = pbasesource;
+	prowdest = prowdestbase;
+
+	for (v=0 ; v<r_numvblocks ; v++)
+	{
+		local_lightleft = r_lightptr[0] & 0xffff;
+		local_lightright = r_lightptr[1] & 0xffff;
+		r_lightptr += r_lightwidth;
+		local_lightleftstep = ( ( (int)r_lightptr[0] & 0xffff ) - local_lightleft) >> 1;
+		local_lightrightstep = ( ( (int)r_lightptr[1] & 0xffff ) - local_lightright) >> 1;
+		local_surfrowbytes = surfrowbytes;
+		local_sourcetstep = sourcetstep;
+
+		for (i=0 ; i<2 ; i++)
+		{
+			lighttemp = ( local_lightright - local_lightleft );
+			lightstep = lighttemp >> 1;
+			light = local_lightleft;
+			local_lightright += local_lightrightstep;
+			local_lightleft += local_lightleftstep;
+
+			light_ptr = ( colormap + light );
+
+			for (b=0; b < 2; b++)
+			{
+				pix = psource[b];
+				prowdest[b] = ((unsigned char *)((( size_t )light_ptr)&~0xff))[pix];
+				light_ptr += lightstep;
+			}
+			psource += local_sourcetstep;
+			prowdest += local_surfrowbytes;
+		}
+
+		if (psource >= r_sourcemax)
+			psource -= r_stepback;
+	}
+}
+
+#else
 
 
 void R_DrawSurfaceBlock8_mip0_aligned_colormap (void)

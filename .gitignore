@@ -1,3 +1,11 @@
 *.o
 *.elf
 source/*.o
+*.upx
+quake
+*.exe
+*.EXE
+*.conf
+*.elf
+id1
+id1/*.pak

@@ -83,9 +83,11 @@ extern cvar_t	r_numedges;
 
 #define	DIST_NOT_SET	98765
 
-
+#if !defined(id386)
 #define RECURSIVE_WORLD_NODE_CLIP_FIXED 1
 #define RECURSIVE_WORLD_NODE_FPLANE     1
+#endif
+
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct clipplane_s
 {

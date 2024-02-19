@@ -40,8 +40,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	GAMENAME	"id1"
 #endif
 
-
+#if !(id386) || defined(NSPIRE_OPTS)
 #define NSPIRE_SMALL_OPTS 1
+#endif
 
 #ifdef FORNSPIRE
 #define atof atof_dummy_syscall
@@ -90,14 +91,15 @@ void	VID_UnlockBuffer (void);
 #define	VID_UnlockBuffer()
 
 #endif
-
+/*
 #if defined __i386__ // && !defined __sun__
 #define id386	0
 #else
 #define id386	0
 #endif
+*/
 
-#if id386
+#if defined(id386) || defined(PC98)
 #define UNALIGNED_OK	1	// set to 0 if unaligned accesses are not supported
 #else
 #define UNALIGNED_OK	0
