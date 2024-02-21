@@ -151,6 +151,60 @@ void Q_memset (void *dest, int fill, int count)
 			((byte *)dest)[i] = fill;
 }
 
+#ifdef PC98
+void fastmemcpy(void *pDest, void *pData, int dwByteCount) {
+    __asm__ __volatile__(
+        "cld\n\t"
+        "mov %1, %%esi\n\t"     // Load pData into esi
+        "mov %2, %%ecx\n\t"     // Load dwByteCount into ecx
+        "mov %0, %%edi\n\t"     // Load pDest into edi
+        "sub $256, %%ecx\n\t"   // Subtract 256 from dwByteCount
+        "jl 1f\n\t"             // Jump if less than to DonePreWarm\n\t
+        
+        ".align 16\n"           // Align loop to 16-byte boundary
+        "2:\n\t"
+        "movb (%%esi), %%al\n\t"       // Read byte from esi to al
+        "movb 32(%%esi), %%bl\n\t"     // Read byte from esi + 32 to bl
+        "movb 64(%%esi), %%al\n\t"     // Read byte from esi + 64 to al
+        "movb 96(%%esi), %%bl\n\t"     // Read byte from esi + 96 to bl
+        "movb 128(%%esi), %%al\n\t"    // Read byte from esi + 128 to al
+        "movb 160(%%esi), %%bl\n\t"    // Read byte from esi + 160 to bl
+        "movb 192(%%esi), %%al\n\t"    // Read byte from esi + 192 to al
+        "movb 224(%%esi), %%bl\n\t"    // Read byte from esi + 224 to bl
+        "add $256, %%esi\n\t"          // Increment esi by 256
+        "nop\n\t"                       // NOP to force instruction pairing
+        "sub $256, %%ecx\n\t"          // Subtract 256 from ecx
+        "jg 2b\n\t"               // Jump if greater than to PreWarm\n\t
+        
+        "1:\n\t"
+        "mov %2, %%ecx\n\t"            // Reload dwByteCount into ecx
+        "mov %1, %%esi\n\t"            // Reload pData into esi
+        "sub $32, %%ecx\n\t"           // Subtract 32 from dwByteCount
+        "jl 3f\n\t"              // Jump if less than to DoneCopy\n\t
+        
+        ".align 16\n"                  // Align loop to 16-byte boundary
+        "4:\n\t"
+        "fildq (%%esi, %%ecx)\n\t"     // Load qword from [esi + ecx] onto the FPU stack
+        "fildq 8(%%esi, %%ecx)\n\t"    // Load qword from [esi + ecx + 8] onto the FPU stack
+        "fildq 16(%%esi, %%ecx)\n\t"   // Load qword from [esi + ecx + 16] onto the FPU stack
+        "fxch %%st(2)\n\t"             // Exchange st(2) and st(0) on the FPU stack
+        "fildq 24(%%esi, %%ecx)\n\t"   // Load qword from [esi + ecx + 24] onto the FPU stack
+        "fxch %%st(2)\n\t"             // Exchange st(2) and st(0) on the FPU stack
+        "fistpq 8(%%edi, %%ecx)\n\t"   // Store qword from st(0) to [edi + ecx + 8] and pop
+        "fistpq (%%edi, %%ecx)\n\t"    // Store qword from st(0) to [edi + ecx] and pop
+        "fistpq 24(%%edi, %%ecx)\n\t"  // Store qword from st(0) to [edi + ecx + 24] and pop
+        "fistpq 16(%%edi, %%ecx)\n\t"  // Store qword from st(0) to [edi + ecx + 16] and pop
+        "sub $32, %%ecx\n\t"           // Subtract 32 from ecx
+        "jge 4b\n\t"             // Jump if greater than or equal to LoopCopy\n\t
+        
+        "3:\n\t"
+        :
+        : "g"(pDest), "g"(pData), "g"(dwByteCount)
+        : "eax", "ebx", "ecx", "edx", "esi", "edi", "memory"
+    );
+}
+#endif
+
 void Q_memcpy (void *dest, void *src, int count)
 {
 	int             i;
@@ -160,10 +214,12 @@ void Q_memcpy (void *dest, void *src, int count)
 		count>>=2;
 		for (i=0 ; i<count ; i++)
 			((int *)dest)[i] = ((int *)src)[i];
+			
+		return;
 	}
-	else
-		for (i=0 ; i<count ; i++)
-			((byte *)dest)[i] = ((byte *)src)[i];
+	
+	for (i=0 ; i<count ; i++)
+		((byte *)dest)[i] = ((byte *)src)[i];
 }
 
 int Q_memcmp (void *m1, void *m2, int count)

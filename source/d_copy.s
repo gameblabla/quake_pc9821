@@ -28,6 +28,7 @@ LDestDelta:		.long	0
 #define destrowbytes	24+16
 
 .globl C(VGA_UpdateLinearScreen)
+
 C(VGA_UpdateLinearScreen):
 	pushl	%ebp				// preserve caller's stack frame
 	pushl	%edi
@@ -58,4 +59,5 @@ LLRowLoop:
 	popl	%ebp				// restore the caller's stack frame
 
 	ret
+
 

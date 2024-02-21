@@ -253,7 +253,7 @@ void Sys_Quit (void)
 double Sys_FloatTime (void)
 {
 	static double t;
-
+	// 10 FPS
 	t += 0.05;
 	
 	return t;
@@ -390,7 +390,7 @@ int main (int argc, char **argv)
 	printf("Quake rwill TINSPIRE fork v2\n" );
 #endif
 	Sys_Init();
-	parms.memsize = 6*1024*1024;
+	parms.memsize = MINIMUM_MEMORY;
 	
 	parms.membase = malloc (parms.memsize);
 	parms.basedir = ".";

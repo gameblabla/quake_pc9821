@@ -123,6 +123,13 @@ float MSG_ReadAngle (void);
 
 void Q_memset (void *dest, int fill, int count);
 void Q_memcpy (void *dest, void *src, int count);
+
+#ifdef PC98
+#define FASTMEMCPY fastmemcpy
+extern void fastmemcpy(void *pDest, void *pData, int dwByteCount);
+#else
+#define FASTMEMCPY Q_memcpy
+#endif
 int Q_memcmp (void *m1, void *m2, int count);
 void Q_strcpy (char *dest, char *src);
 void Q_strncpy (char *dest, char *src, int count);

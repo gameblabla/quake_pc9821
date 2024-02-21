@@ -87,7 +87,7 @@ int R_ClipSpriteFace (int nump, clipplane_t *pclipplane)
 	
 // handle wraparound case
 	dists[nump] = dists[0];
-	Q_memcpy (instep, in, sizeof (vec5_t));
+	FASTMEMCPY (instep, in, sizeof (vec5_t));
 
 
 // clip the winding

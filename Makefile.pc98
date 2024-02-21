@@ -16,7 +16,7 @@ TYR_VERSION_NUM ?= $(patsubst v%,%,$(TYR_VERSION))
 
 # Linker
 LDFLAGS = -lc -lm -flto -Wl,--as-needed -Wl,--gc-sections -s
-CFLAGS = -Ofast -flto -fdata-sections -ffunction-sections -fno-common -Wall -Wextra -DDJGPP -DPC98 -DNQ_HACK -DNDEBUG -DELF -DTYR_VERSION=$(TYR_VERSION_NUM) -DQBASEDIR="." 
+CFLAGS = -Ofast -march=pentium -mtune=pentium -flto -fdata-sections -ffunction-sections -fno-common -Wall -Wextra -DDJGPP -DPC98 -DNQ_HACK -DNDEBUG -DELF -DTYR_VERSION=$(TYR_VERSION_NUM) -DQBASEDIR="." 
 
 # CFLAGS += -mpc32
 
